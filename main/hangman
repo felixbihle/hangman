@@ -1,0 +1,70 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jan 16 09:16:31 2023
+
+@author: felix
+"""
+
+secret_word = ""
+guessed_letters = []
+correct_letters = []
+
+
+import random
+fo = open("C:\hangman\hangman\words_alpha.txt","r")
+word_list = fo.readlines()
+
+def hangman(secret_word):
+    random_word = random.choice(word_list) 
+    #print(random_word, len(random_word)) 
+    while len(random_word) > 12:
+        random_word = random.choice(word_list)
+        continue
+    secret_word = random_word
+    
+    #print(secret_word)
+    guesses = 10
+   
+    blank = ["__ "]
+    blanks = blank  * (len(secret_word) - 1)
+    print(f'{" ".join(blanks)} \n')
+    
+    while guesses > 0:
+        x = input("Guess a letter:")
+        if not x.isalpha():
+            print("Guess must be a letter")
+            continue
+        elif len(x) > 1:
+            print("One letter at a time")
+            continue
+    
+        if x not in guessed_letters:
+            guessed_letters.append(x)
+            if x in secret_word[:]:
+                correct_letters.append(x)
+                for i in range(len(secret_word)):
+                    if secret_word[i] in correct_letters:
+                        blanks = blanks[0:i] + [secret_word[i]] + blanks[(i + 1):]
+                print(f'\n{x} is in the word')
+                print(f'{" ".join(blanks)} \n')
+                print(f'You have guessed: {",".join(guessed_letters)}')
+                print(f'You have {guesses} guesses remaining \n')
+                if all(element.isalpha() for element in blanks):
+                    print("You won!")
+                    break
+                    
+            else:
+                guesses -= 1
+                print(f'{" ".join(blanks)} \n')
+                print(f'You have guessed: {", ".join(guessed_letters)}')
+                print("You have", guesses, "guesses remaining \n")
+                         
+        else:
+            print(f'You have already guessed {x} \n')
+         
+    if guesses == 0:
+        print("You lose. The correct word was", secret_word)
+    
+    
+    
+hangman(secret_word)
